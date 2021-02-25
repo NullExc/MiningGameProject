@@ -41,6 +41,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""e370616f-c19f-4cef-9ea5-fd79bf879e8a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -120,6 +128,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""ClimbLadder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6be45050-357e-419a-bbf6-53289ff1ba8d"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -131,6 +150,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Land_Move = m_Land.FindAction("Move", throwIfNotFound: true);
         m_Land_Jump = m_Land.FindAction("Jump", throwIfNotFound: true);
         m_Land_ClimbLadder = m_Land.FindAction("ClimbLadder", throwIfNotFound: true);
+        m_Land_Sprint = m_Land.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,6 +203,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Land_Move;
     private readonly InputAction m_Land_Jump;
     private readonly InputAction m_Land_ClimbLadder;
+    private readonly InputAction m_Land_Sprint;
     public struct LandActions
     {
         private @PlayerControls m_Wrapper;
@@ -190,6 +211,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_Land_Move;
         public InputAction @Jump => m_Wrapper.m_Land_Jump;
         public InputAction @ClimbLadder => m_Wrapper.m_Land_ClimbLadder;
+        public InputAction @Sprint => m_Wrapper.m_Land_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -208,6 +230,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @ClimbLadder.started -= m_Wrapper.m_LandActionsCallbackInterface.OnClimbLadder;
                 @ClimbLadder.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnClimbLadder;
                 @ClimbLadder.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnClimbLadder;
+                @Sprint.started -= m_Wrapper.m_LandActionsCallbackInterface.OnSprint;
+                @Sprint.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnSprint;
+                @Sprint.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnSprint;
             }
             m_Wrapper.m_LandActionsCallbackInterface = instance;
             if (instance != null)
@@ -221,6 +246,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @ClimbLadder.started += instance.OnClimbLadder;
                 @ClimbLadder.performed += instance.OnClimbLadder;
                 @ClimbLadder.canceled += instance.OnClimbLadder;
+                @Sprint.started += instance.OnSprint;
+                @Sprint.performed += instance.OnSprint;
+                @Sprint.canceled += instance.OnSprint;
             }
         }
     }
@@ -230,5 +258,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnClimbLadder(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

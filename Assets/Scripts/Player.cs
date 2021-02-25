@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private float gravityScaleAtStart;
 
     [SerializeField] private float speed;
+    [SerializeField] private float sprintMultiplier;
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float climbSpeed;
 
@@ -28,6 +29,8 @@ public class Player : MonoBehaviour
         collider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+
+        playerControls.Land.Jump.performed += _ => Jump();
     }
 
     private void OnEnable()
@@ -44,13 +47,21 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerControls.Land.Jump.performed += _ => Jump();
         gravityScaleAtStart = rigidBody.gravityScale;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (playerControls.Land.Sprint.activeControl != null) {
+            if (IsGrounded()) {
+                float movementInput = playerControls.Land.Move.ReadValue<float>();
+
+                Vector2 currentPosition = transform.position;
+                currentPosition.x += movementInput * sprintMultiplier * Time.deltaTime;
+                transform.position = currentPosition;
+            }
+        }
         Run();
         FlipSprite();
         ClimbLadder();
@@ -60,7 +71,7 @@ public class Player : MonoBehaviour
     {
         float movementInput = playerControls.Land.Move.ReadValue<float>();
 
-        Vector3 currentPosition = transform.position;
+        Vector2 currentPosition = transform.position;
         currentPosition.x += movementInput * speed * Time.deltaTime;
         transform.position = currentPosition;
 
