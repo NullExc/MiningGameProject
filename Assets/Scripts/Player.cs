@@ -53,15 +53,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControls.Land.Sprint.activeControl != null) {
-            if (IsGrounded()) {
-                float movementInput = playerControls.Land.Move.ReadValue<float>();
-
-                Vector2 currentPosition = transform.position;
-                currentPosition.x += movementInput * sprintMultiplier * Time.deltaTime;
-                transform.position = currentPosition;
-            }
-        }
+        Sprint();
         Run();
         FlipSprite();
         ClimbLadder();
@@ -129,6 +121,20 @@ public class Player : MonoBehaviour
         {
             Vector2 jumpVelocityToAdd = new Vector2(0, jumpSpeed);
             rigidBody.velocity = jumpVelocityToAdd;
+        }
+    }
+
+    private void Sprint() {
+        if (playerControls.Land.Sprint.activeControl != null) {
+            if (IsGrounded() & StaminaBar.instance.HaveStamina()) {
+                float movementInput = playerControls.Land.Move.ReadValue<float>();
+
+                Vector2 currentPosition = transform.position;
+                currentPosition.x += movementInput * sprintMultiplier * Time.deltaTime;
+                transform.position = currentPosition;
+
+                StaminaBar.instance.UseStamina(0.015);
+            }
         }
     }
 
